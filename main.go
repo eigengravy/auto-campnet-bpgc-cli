@@ -33,9 +33,9 @@ func main() {
 		}
 	}
 
-	username, password, err := GetCredentialsFromFile(configFile)
+	username, password, err := getCredentialsFromFile(configFile)
 	if err != nil {
-		username, password, err = GetCredentialsFromUser(configFile)
+		username, password, err = getCredentialsFromUser(configFile)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -44,11 +44,11 @@ func main() {
 	ticker := time.NewTicker(time.Minute)
 
 	go func() {
-		Connect(username, password, configFile)
+		connect(username, password, configFile)
 		for {
 			select {
 			case <-ticker.C:
-				Connect(username, password, configFile)
+				connect(username, password, configFile)
 			}
 		}
 	}()
@@ -56,7 +56,7 @@ func main() {
 	select {}
 }
 
-func Connect(username string, password string, configFile string) {
+func connect(username string, password string, configFile string) {
 	if _, err := http.Get("https://campnet.bits-goa.ac.in:8090/"); err != nil {
 		fmt.Println(formattedTime(), "CampNet unavailable")
 	} else if _, err := http.Get("https://google.com/"); err == nil {
@@ -90,7 +90,7 @@ func Connect(username string, password string, configFile string) {
 	}
 }
 
-func GetCredentialsFromFile(configFile string) (string, string, error) {
+func getCredentialsFromFile(configFile string) (string, string, error) {
 
 	f, err := os.Open(configFile)
 	if err != nil {
@@ -106,7 +106,7 @@ func GetCredentialsFromFile(configFile string) (string, string, error) {
 
 }
 
-func GetCredentialsFromUser(configFile string) (string, string, error) {
+func getCredentialsFromUser(configFile string) (string, string, error) {
 
 	var username, password string
 	fmt.Print("Username: ")
